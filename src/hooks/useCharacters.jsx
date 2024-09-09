@@ -1,41 +1,43 @@
-import { useState, useEffect } from "react";
-import { reqCharacters } from "";
+import { useEffect, useState } from "react"
+import { reqCharacteres } from "../services/characters"
 
 export const useCharacters = () => {
-    const [characters, setCharacters] = useState([]);
-    const [offset, setOffset] = useState(0);
-    const [name, setName] = useState('');
+    const [characters, setCharacters] = useState([])
+    const [offset, setOffset] = useState(0)
+    const [limit] = useState(20)
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
-        reqCharacters(name, offset).then((data) => {
-            setCharacters(data.results);
-        });
-    }, [name, offset]);
+        reqCharacteres(offset, limit, searchTerm).then(data => {
+            setCharacters(data.results)
+        })
+    }, [offset, limit, searchTerm])
 
-    const searchCharacter = (name) => {
-        setName(name);
-        setOffset(0); 
+    const fetchNextPage = () => {
+        setOffset(prevOffset => prevOffset + limit)
     }
 
-    const nextPage = () => {
-        setOffset((prevOffset) => prevOffset + 20); 
+    const fetchPreviousPage = () => {
+        if (offset > 0) {
+            setOffset(prevOffset => prevOffset - limit)
+        }
     }
 
-    const previousPage = () => {
-        setOffset((prevOffset) => Math.max(prevOffset - 20, 0)); 
+    const searchCharacters = (term) => {
+        setSearchTerm(term)
+        setOffset(0)  
     }
 
-    const formtaImageuRL = (char) => {
-        const imagePath = char.thumbnail;
-        const url_image = `${imagePath.path}.${imagePath.extension}`;
-        return url_image;
+    const formatImageUrl = (char) => {
+        const imagePath = char.thumbnail
+        return `${imagePath.path}.${imagePath.extension}`
     }
 
     return {
         characters,
-        formtaImageuRL,
-        searchCharacter,
-        nextPage,
-        previousPage
-    };
+        formatImageUrl,
+        fetchNextPage,
+        fetchPreviousPage,
+        searchCharacters
+    }
 }

@@ -1,22 +1,21 @@
 import { useCharacters } from "../hooks/useCharacters"
-import { BuscarCharacters } from "./BuscarCharacters"
-import { ContenedorCharacters } from "./ContenedorCharacters";
+import { ContainerCharacters } from "./ContainerCharacters"
+import { BuscarCharacters } from "./BuscarCharacters" 
 
 export const MarvelApp = () => {
+    const { characters, formatImageUrl, fetchNextPage, fetchPreviousPage, searchCharacters } = useCharacters()
 
-    const {characters, formatImageUrl, } = useCharacters()
-
-
-  return (
-    <>
-    <BuscarCharacters BuscarCharacters={BuscarCharacters} />
-            <ContenedorCharacters 
-                characters={characters} 
-                formtaImageuRL={formtaImageuRL} 
-                nextPage={nextPage} 
-                previousPage={previousPage} 
-            />
-      
-    </>
-  )
+    return (
+        <>
+            <div className="container mt-4">
+                <BuscarCharacters onSearch={searchCharacters} />
+                <ContainerCharacters 
+                    characters={characters} 
+                    formatImageUrl={formatImageUrl} 
+                    nextPage={fetchNextPage} 
+                    previousPage={fetchPreviousPage}
+                />
+            </div>
+        </>
+    )
 }
